@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('发货单主列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <p>发货单号：</p>
+                                <input type="text" name="invoiceNum"/>
+                            </li>
+                            <li>
+                                <p style="width: 100px">采购订单号：</p>
+                                <input type="text" name="poNum"/>
+                            </li>
+                            <li class="select-time">
+                                <p>时间范围：</p>
+                                <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginCreateDate]"/>
+                                <span>-</span>
+                                <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endCreateDate]"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="fhtzd:main:export">
+                    <i class="fa fa-download"></i> 导出
+                 </a>
+                <a class="btn btn-info " onclick="$.operate.editTab()" shiro:hasPermission="fhtzd:dateil:edit">
+                    <i class="fa fa-edit"></i> 查询明细
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('fhtzd:main:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('fhtzd:main:remove')}]];
+        var prefix = ctx + "fhtzd/main";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                exportUrl: prefix + "/export",
+                updateUrl: prefix + "/edit/{id}",
+                modalName: "发货单主表",
+                columns: [
+                    {
+                        checkbox: true
+                    },
+                {
+                    field : 'invoiceNum', 
+                    title : '发货单号'
+                },
+                {
+                    field : 'poNum', 
+                    title : '采购订单号'
+                },
+                {
+                    field : 'supplierNum',
+                    title : '供应商编号'
+                },
+                {
+                    field : 'supplier',
+                    title : '供应商名称'
+                },
+                {
+                    field : 'planWeight',
+                    title : '计划重量'
+                },
+                {
+                    field : 'declareWeight',
+                    title : '申报重量'
+                },
+                {
+                    field : 'checkWeight',
+                    title : '审核重量'
+                },
+                    {
+                        field : 'sippingWeight',
+                        title : '发货重量'
+                    },
+                    {
+                        field : 'status',
+                        title : '状态(1创建，2完成)'
+                    },{
+                        field : 'bourn',
+                        title : '目的库房'
+                    },
+                    {
+                        field : 'createDate',
+                        title : '创建时间'
+                    },
+              ]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

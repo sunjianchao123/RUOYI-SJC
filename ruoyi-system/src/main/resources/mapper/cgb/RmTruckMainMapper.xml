@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cgb.mapper.RmTruckMainMapper">
+    
+    <resultMap type="RmTruckMain" id="RmTruckMainResult">
+        <result property="poNum"    column="po_num"    />
+        <result property="truckNum"    column="truck_num"    />
+        <result property="invoiceNum"    column="invoice_num"    />
+        <result property="wlxxid"    column="wlxxid"    />
+        <result property="wlmcId" column="wlmc"/>
+        <result property="checkWeight"    column="check_weight"    />
+        <result property="sippingWeight"    column="sipping_weight"    />
+        <result property="arriveDate"    column="arrive_date"    />
+        <result property="driverPhone"    column="driver_phone"    />
+        <result property="driverCar"    column="driver_car"    />
+        <result property="scanCount" column="scan_count"/>
+        <result property="status"    column="status"    />
+        <result property="bourn"    column="BOURN_STORAGE_ID"    />
+        <result property="createDate"    column="create_date"    />
+    </resultMap>
+
+    <sql id="selectRmTruckMainVo">
+        select
+rtm.truck_num,
+rtm.po_num,
+rtm.invoice_num,
+rtm.WLXXID,
+getwlxx(rtm.wlxxid) as wlmc,
+rtm.check_weight,
+rtm.sipping_weight,
+rtm.arrive_date,
+rtm.driver_phone,
+rtm.driver_car,
+rtd.scan_count,
+rtm.status,
+rtm.BOURN_STORAGE_ID,
+rtm.create_date
+from rm_truck_main rtm
+left join rm_truck_detail rtd on rtm.truck_num = rtd.truck_num
+    </sql>
+
+    <select id="selectRmTruckMainList" parameterType="RmTruckMain" resultMap="RmTruckMainResult">
+        <include refid="selectRmTruckMainVo"/>
+        <where>  
+            <if test="poNum != null  and poNum != ''"> and po_num = #{poNum}</if>
+            <if test="truckNum != null and truckNum != ''"> and rtm.truck_num = #{truckNum}</if>
+            <if test="invoiceNum != null  and invoiceNum != ''"> and invoice_num = #{invoiceNum}</if>
+            <if test="wlxxid != null  and wlxxid != ''"> and wlxxid = #{wlxxid}</if>
+            <if test="wlmcId != null and wlmcId != ''"> and wlmc = #{wlmcId}</if>
+            <if test="checkWeight != null and checkWeight != ''"> and check_weight = #{checkWeight}</if>
+            <if test="sippingWeight != null and  sippingWeight != ''"> and sipping_weight = #{sippingWeight}</if>
+            <if test="arriveDate != null "> and arrive_date = #{arriveDate}</if>
+            <if test="driverPhone != null  and driverPhone != ''"> and driver_phone = #{driverPhone}</if>
+            <if test="driverCar != null  and driverCar != ''"> and driver_car = #{driverCar}</if>
+            <if test="status != null and status != ''"> and status = #{status}</if>
+            <if test="bourn != null  and bourn != ''"> and BOURN_STORAGE_ID = #{bourn}</if>
+            <if test="createDate != null "> and create_date = #{createDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectRmTruckMainById" parameterType="String" resultMap="RmTruckMainResult">
+        <include refid="selectRmTruckMainVo"/>
+        where truck_num = #{truckNum}
+    </select>
+        
+    <insert id="insertRmTruckMain" parameterType="RmTruckMain">
+        <selectKey keyProperty="truckNum" resultType="long" order="BEFORE">
+            SELECT seq_rm_truck_main.NEXTVAL as truckNum FROM DUAL
+        </selectKey>
+        insert into rm_truck_main
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="poNum != null  and poNum != ''"> and po_num = #{poNum}</if>
+            <if test="truckNum != null and truckNum != ''"> and rtm.truck_num = #{truckNum}</if>
+            <if test="invoiceNum != null  and invoiceNum != ''"> and invoice_num = #{invoiceNum}</if>
+            <if test="wlxxid != null  and wlxxid != ''"> and wlxxid = #{wlxxid}</if>
+            <if test="wlmcId != null and wlmcId != ''"> and wlmc = #{wlmcId}</if>
+            <if test="checkWeight != null and checkWeight != ''"> and check_weight = #{checkWeight}</if>
+            <if test="sippingWeight != null and  sippingWeight != ''"> and sipping_weight = #{sippingWeight}</if>
+            <if test="arriveDate != null "> and arrive_date = #{arriveDate}</if>
+            <if test="driverPhone != null  and driverPhone != ''"> and driver_phone = #{driverPhone}</if>
+            <if test="driverCar != null  and driverCar != ''"> and driver_car = #{driverCar}</if>
+            <if test="status != null and status != ''"> and status = #{status}</if>
+            <if test="bourn != null  and bourn != ''"> and BOURN_STORAGE_ID = #{bourn}</if>
+            <if test="createDate != null "> and create_date = #{createDate}</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="poNum != null  and poNum != ''"> and po_num = #{poNum}</if>
+            <if test="truckNum != null and truckNum != ''"> and rtm.truck_num = #{truckNum}</if>
+            <if test="invoiceNum != null  and invoiceNum != ''"> and invoice_num = #{invoiceNum}</if>
+            <if test="wlxxid != null  and wlxxid != ''"> and wlxxid = #{wlxxid}</if>
+            <if test="wlmcId != null and wlmcId != ''"> and wlmc = #{wlmcId}</if>
+            <if test="checkWeight != null and checkWeight != ''"> and check_weight = #{checkWeight}</if>
+            <if test="sippingWeight != null and  sippingWeight != ''"> and sipping_weight = #{sippingWeight}</if>
+            <if test="arriveDate != null "> and arrive_date = #{arriveDate}</if>
+            <if test="driverPhone != null  and driverPhone != ''"> and driver_phone = #{driverPhone}</if>
+            <if test="driverCar != null  and driverCar != ''"> and driver_car = #{driverCar}</if>
+            <if test="status != null and status != ''"> and status = #{status}</if>
+            <if test="bourn != null  and bourn != ''"> and BOURN_STORAGE_ID = #{bourn}</if>
+            <if test="createDate != null "> and create_date = #{createDate}</if>
+         </trim>
+    </insert>
+
+    <update id="updateRmTruckMain" parameterType="RmTruckMain">
+        update rm_truck_main
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="poNum != null  and poNum != ''"> and po_num = #{poNum}</if>
+            <if test="truckNum != null and truckNum != ''"> and rtm.truck_num = #{truckNum}</if>
+            <if test="invoiceNum != null  and invoiceNum != ''"> and invoice_num = #{invoiceNum}</if>
+            <if test="wlxxid != null  and wlxxid != ''"> and wlxxid = #{wlxxid}</if>
+            <if test="wlmcId != null and wlmcId != ''"> and wlmc = #{wlmcId}</if>
+            <if test="checkWeight != null and checkWeight != ''"> and check_weight = #{checkWeight}</if>
+            <if test="sippingWeight != null and  sippingWeight != ''"> and sipping_weight = #{sippingWeight}</if>
+            <if test="arriveDate != null "> and arrive_date = #{arriveDate}</if>
+            <if test="driverPhone != null  and driverPhone != ''"> and driver_phone = #{driverPhone}</if>
+            <if test="driverCar != null  and driverCar != ''"> and driver_car = #{driverCar}</if>
+            <if test="status != null and status != ''"> and status = #{status}</if>
+            <if test="bourn != null  and bourn != ''"> and BOURN_STORAGE_ID = #{bourn}</if>
+            <if test="createDate != null "> and create_date = #{createDate}</if>
+        </trim>
+        where rtm.truck_num = #{truckNum}
+    </update>
+    
+</mapper>

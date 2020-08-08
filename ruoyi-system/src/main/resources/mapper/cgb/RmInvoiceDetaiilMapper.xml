@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cgb.mapper.RmInvoiceDetaiilMapper">
+    
+    <resultMap type="RmInvoiceDetaiil" id="RmInvoiceDetaiilResult">
+        <result property="invoiceNum"    column="invoice_num"    />
+        <result property="poNum" column="po_num"/>
+        <result property="wlxxid"    column="wlxxid"    />
+        <result property="wlmcId" column="wlmc"/>
+        <result property="planWeight"    column="plan_weight"    />
+        <result property="declareWeight"    column="declare_weight"    />
+        <result property="checkWeight"    column="check_weight"    />
+        <result property="sippingWeight"    column="sipping_weight"    />
+        <result property="bourn" column="bourn"/>
+        <result property= "createDate" column="create_date"/>
+    </resultMap>
+
+    <sql id="selectRmInvoiceDetaiilVo">
+        select
+            rid.invoice_num,
+            rim.po_num,
+            rid.wlxxid,
+            getwlxx(wlxxid) as wlmc,
+            rid.plan_weight,
+            rid.declare_weight,
+            rid.check_weight,
+            rid.sipping_weight,
+            rim.bourn,
+            rim.create_date
+            from rm_invoice_detaiil rid
+            left join rm_invoice_main rim on rid.invoice_num = rim.invoice_num
+    </sql>
+
+    <select id="selectRmInvoiceDetaiilList" parameterType="RmInvoiceDetaiil" resultMap="RmInvoiceDetaiilResult">
+        <include refid="selectRmInvoiceDetaiilVo"/>
+        <where>
+            <if test="invoiceNum != null  and invoiceNum != ''"> and invoice_num = #{invoiceNum}</if>
+            <if test="poNum != null and poNum != ''"> and po_num = #{poNum}</if>
+            <if test="wlxxid != null  and wlxxid != ''"> and wlxxid = #{wlxxid}</if>
+            <if test="wlmcId != null and wlmcId != ''"> and wlmc = #{wlmcId}</if>
+            <if test="planWeight != null "> and plan_weight = #{planWeight}</if>
+            <if test="declareWeight != null "> and declare_weight = #{declareWeight}</if>
+            <if test="checkWeight != null "> and check_weight = #{checkWeight}</if>
+            <if test="sippingWeight != null "> and sipping_weight = #{sippingWeight}</if>
+            <if test="bourn != null and bourn != ''"> and bourn = #{bourn}</if>
+            <if test="createDate != null and createDate != ''"> and create_date = #{createDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectRmInvoiceDetaiilById" parameterType="String" resultMap="RmInvoiceDetaiilResult">
+        <include refid="selectRmInvoiceDetaiilVo"/>
+        where wlxxid = #{wlxxid}
+    </select>
+
+    <insert id="insertRmInvoiceDetaiil" parameterType="RmInvoiceDetaiil">
+        insert into rm_invoice_detaiil
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="wlxxid != null  and wlxxid != ''">wlxxid,</if>
+            <if test="invoiceNum != null  and invoiceNum != ''">invoice_num,</if>
+            <if test="planWeight != null ">plan_weight,</if>
+            <if test="declareWeight != null ">declare_weight,</if>
+            <if test="checkWeight != null ">check_weight,</if>
+            <if test="sippingWeight != null ">sipping_weight,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="wlxxid != null  and wlxxid != ''">#{wlxxid},</if>
+            <if test="invoiceNum != null  and invoiceNum != ''">#{invoiceNum},</if>
+            <if test="planWeight != null ">#{planWeight},</if>
+            <if test="declareWeight != null ">#{declareWeight},</if>
+            <if test="checkWeight != null ">#{checkWeight},</if>
+            <if test="sippingWeight != null ">#{sippingWeight},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRmInvoiceDetaiil" parameterType="RmInvoiceDetaiil">
+        update rm_invoice_detaiil
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="invoiceNum != null  and invoiceNum != ''">invoice_num = #{invoiceNum},</if>
+            <if test="planWeight != null ">plan_weight = #{planWeight},</if>
+            <if test="declareWeight != null ">declare_weight = #{declareWeight},</if>
+            <if test="checkWeight != null ">check_weight = #{checkWeight},</if>
+            <if test="sippingWeight != null ">sipping_weight = #{sippingWeight},</if>
+        </trim>
+        where wlxxid = #{wlxxid}
+    </update>
+
+    <delete id="deleteRmInvoiceDetaiilById" parameterType="String">
+        delete from rm_invoice_detaiil where wlxxid = #{wlxxid}
+    </delete>
+
+    <delete id="deleteRmInvoiceDetaiilByIds" parameterType="String">
+        delete from rm_invoice_detaiil where wlxxid in 
+        <foreach item="wlxxid" collection="array" open="(" separator="," close=")">
+            #{wlxxid}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cgb.mapper.RmPoMainMapper">
+
+    <resultMap type="RmPoMain" id="RmPoMainResult">
+        <result property="poNum"    column="po_num"    />
+        <result property="supplier_num"    column="supplier_num"    />
+        <result property="supplier" column="supplier"/>
+        <result property="plan_weight" column="plan_weight"/>
+        <result property="sipping_weight" column="sipping_weight"/>
+        <result property="status"    column="status"    />
+        <result property="bourn"    column="BOURN_STORAGE_ID"    />
+        <result property="createDate"    column="create_date"    />
+    </resultMap>
+
+    <sql id="selectRmPoMainVo">
+        select
+         rpm.po_num,
+         rpm.supplier_num,
+         GetSupplier(rpm.supplier_num) as supperlier,
+         rpd.plan_weight,
+         rpd.sipping_weight,
+         rpm.status,rpm.BOURN_STORAGE_ID,
+         rpm.create_date
+        from
+        rm_po_main rpm
+        left join rm_po_detail rpd on rpm.po_num = rpd.po_num
+    </sql>
+
+    <select id="selectRmPoMainList" parameterType="RmPoMain" resultMap="RmPoMainResult">
+        <include refid="selectRmPoMainVo"/>
+
+        <where>
+            <if test="poNum != null  and poNum != ''"> and rpm.po_num = #{poNum}</if>
+            <if test="supplier_num != null  and supplier_num != ''"> and supplier_num = #{supplier_num}</if>
+            <if test="supplier != null and supplier != ''">and supplier = #{supplier}</if>
+            <if test="plan_weight != null  and plan_weight != ''"> and plan_weight = #{plan_weight}</if>
+            <if test="sipping_weight != null  and sipping_weight != ''"> and sipping_weight = #{sipping_weight}</if>
+            <if test="status != null and status != ''"> and status = #{status}</if>
+            <if test="bourn != null  and bourn != ''"> and BOURN_STORAGE_ID = #{bourn}</if>
+            <if test="createDate != null and createDate != ''"> and create_date = #{createDate}</if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                and create_time &gt;= to_date(#{params.beginTime},'yyyy-MM-dd HH24:mi:ss')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                and create_time &lt;= to_date(#{params.endTime},'yyyy-MM-dd HH24:mi:ss')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectRmPoMainById" parameterType="String" resultMap="RmPoMainResult">
+        <include refid="selectRmPoMainVo"/>
+        where po_num = #{poNum}
+    </select>
+    <update id="updateRmPoMain" parameterType="RmPoMain">
+        update rm_po_main
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="poNum != null  and poNum != ''"> and rpm.po_num = #{poNum}</if>
+            <if test="supplier_num != null  and supplier_num != ''"> and supplier_num = #{supplier_num}</if>
+            <if test="supplier != null and supplier != ''">and supplier = #{supplier}</if>
+            <if test="plan_weight != null  and plan_weight != ''"> and plan_weight = #{plan_weight}</if>
+            <if test="sipping_weight != null  and sipping_weight != ''"> and sipping_weight = #{sipping_weight}</if>
+            <if test="status != null and status != ''"> and status = #{status}</if>
+            <if test="bourn != null  and bourn != ''"> and BOURN_STORAGE_ID = #{bourn}</if>
+            <if test="createDate != null and createDate != ''"> and create_date = #{createDate}</if>
+        </trim>
+        where po_num = #{poNum}
+    </update>
+
+
+</mapper>

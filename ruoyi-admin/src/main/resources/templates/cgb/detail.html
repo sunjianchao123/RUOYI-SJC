@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('采购订单明细')" />
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <li><a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+    var prefix = ctx + "cgb/detail";
+    $(function() {
+        var options = {
+            url:prefix + "/list",
+            columns: [
+                {
+                    field : 'poNum',
+                    title :'采购订单号'
+
+                },
+                {
+                    field : 'lineNum',
+                    title : '行项目号'
+                },
+                {
+                    field:'wlxxId',
+                    title:'物料编码'
+                },
+                {
+                    field : 'wlmcId',
+                    title : '物料名称'
+                },
+                {
+                    field : 'plan_weight',
+                    title : '计划重量'
+                },
+                {
+                    field : 'sipping_weight',
+                    title : '发货重量'
+                },
+            ]
+        };
+        $.table.init(options);
+    });
+</script>
+</body>
+</html>

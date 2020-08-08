@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('装车单主列表')"/>
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            <p>装车单号：</p>
+                            <input type="text" name="truckNum"/>
+                        </li>
+                        <li>
+                            <p>物料名称：</p>
+                            <input type="text" name="wlmcId"/>
+                        </li>
+                        <li class="select-time">
+                            <p>时间范围：</p>
+                            <input type="text" class="time-input" id="startTime" placeholder="开始时间"
+                                   name="params[beginCreateDate]"/>
+                            <span>-</span>
+                            <input type="text" class="time-input" id="endTime" placeholder="结束时间"
+                                   name="params[endCreateDate]"/>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                    class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
+                                    class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.addTab()" shiro:hasPermission="zcdgl:add">
+                    <i class="fa fa-plus">装车单明细</i>
+                </a>
+            <a class="btn btn-primary single disabled" >
+                <i class="fa fa-edit"></i> 打印装车单
+            </a>
+            <a class="btn btn-default">
+                <i class="fa fa-edit"></i> 发货
+            </a>
+            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:main:export">
+                <i class="fa fa-download"></i> 导出
+            </a>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('zcdgl:main:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('zcdgl:main:remove')}]];
+    var prefix = ctx + "zcdgl/main";
+
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            exportUrl: prefix + "/export",
+            modalName: "装车单主表",
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'truckNum',
+                    title: '装车单号',
+                },
+                {
+                    field: 'poNum',
+                    title: '采购订单号'
+                },
+                {
+                    field: 'invoiceNum',
+                    title: '发货单号'
+                },
+                {
+                    field: 'wlxxid',
+                    title: '物料编码'
+                },
+                {
+                    field:'wlmcId',
+                    title:'物料名称'
+                },
+                {
+                    field: 'checkWeight',
+                    title: '审核重量'
+                },
+                {
+                    field: 'sippingWeight',
+                    title: '发货重量'
+                },
+                {
+                    field: 'arriveDate',
+                    title: '预计到货时间'
+                },
+                {
+                    field: 'driverPhone',
+                    title: '驾驶员电话'
+                },
+                {
+                    field: 'driverCar',
+                    title: '驾驶员车辆'
+                },
+                {
+                    field:'scanCount',
+                    title:'扫描数量'
+                },
+                {
+                    field: 'status',
+                    title: '状态(1创建，2完成)'
+                },
+                {
+                    field: 'bourn',
+                    title: '目的库房'
+                },
+                {
+                    field: 'createDate',
+                    title: '操作时间'
+                },
+                {
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.truckNum + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        return actions.join('');
+                    }
+                }]
+        };
+        $.table.init(options);
+    });
+</script>
+</body>
+</html>

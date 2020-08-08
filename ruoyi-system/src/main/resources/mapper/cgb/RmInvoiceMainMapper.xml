@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cgb.mapper.RmInvoiceMainMapper">
+    
+    <resultMap type="RmInvoiceMain" id="RmInvoiceMainResult">
+        <result property="invoiceNum"    column="invoice_num"    />
+        <result property="poNum"    column="po_num"    />
+        <result property="supplierNum"    column="supplier_num"    />
+        <result property="supplier" column="supplier"/>
+        <result property="planWeight" column="plan_Weight"/>
+        <result property="declareWeight" column="declare_Weight"/>
+        <result property="checkWeight" column="check_Weight"/>
+        <result property="sippingWeight" column="sipping_Weight"/>
+        <result property="status"    column="status"    />
+        <result property="bourn"    column="BOURN_STORAGE_ID"    />
+        <result property="createDate"    column="create_date"    />
+    </resultMap>
+
+    <sql id="selectRmInvoiceMainVo" >
+       select
+         rid.invoice_num,
+         rim.po_num,
+         rim.supplier_num,
+         GetSupplier(rim.supplier_num),
+         rid.plan_weight,
+         rid.declare_weight,
+         rid.check_weight,
+         rid.sipping_weight,
+         rim.status,
+         rim.BOURN_STORAGE_ID,
+         rim.create_date
+       from RM_INVOICE_MAIN rim
+     left join RM_INVOICE_DETAIIL rid on rim.invoice_num = rid.invoice_num
+    </sql>
+
+    <select id="selectRmInvoiceMainList" parameterType="RmInvoiceMain" resultMap="RmInvoiceMainResult">
+        <include refid="selectRmInvoiceMainVo"/>
+        <where>  
+            <if test="invoiceNum != null  and invoiceNum != ''"> and rim.invoice_num = #{invoiceNum}</if>
+            <if test="poNum != null  and poNum != ''"> and po_num = #{poNum}</if>
+            <if test="supplierNum != null  and supplierNum != ''"> and supplier_num = #{supplierNum}</if>
+            <if test="supplier!= null and supplier != ''" > and supplier = #{supplier}</if>
+            <if test="planWeight != null and planWeight != ''" > and planWeight = #{planWeight}</if>
+            <if test="declareWeight != null and declareWeight != ''" > and declareWeight = #{declareWeight}</if>
+            <if test="checkWeight != null and checkWeight != ''" > and  checkWeight = #{checkWeight}</if>
+            <if test="sippingWeight != null and sippingWeight != ''"> and sippingWeight = #{sippingWeight}</if>
+            <if test="status != null and status !=''"> and status = #{status}</if>
+            <if test="bourn != null  and bourn != ''"> and BOURN_STORAGE_ID = #{bourn}</if>
+            <if test="createDate != null and createDate != ''"> and create_date = #{createDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectRmInvoiceMainById" parameterType="String" resultMap="RmInvoiceMainResult">
+        <include refid="selectRmInvoiceMainVo"/>
+        where invoice_num = #{invoiceNum}
+    </select>
+
+    <update id="updateRmInvoiceMain" parameterType="RmInvoiceMain">
+        update rm_invoice_main
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="invoiceNum != null  and invoiceNum != ''"> and rim.invoice_num = #{invoiceNum}</if>
+            <if test="poNum != null  and poNum != ''"> and po_num = #{poNum}</if>
+            <if test="supplierNum != null  and supplierNum != ''"> and supplier_num = #{supplierNum}</if>
+            <if test="supplier!= null and supplier != ''" > and supplier = #{supplier}</if>
+            <if test="planWeight != null and planWeight != ''" > and planWeight = #{planWeight}</if>
+            <if test="declareWeight != null and declareWeight != ''" > and declareWeight = #{declareWeight}</if>
+            <if test="checkWeight != null and checkWeight != ''" > and  checkWeight = #{checkWeight}</if>
+            <if test="sippingWeight != null and sippingWeight != ''"> and sippingWeight = #{sippingWeight}</if>
+            <if test="status != null and status !=''"> and status = #{status}</if>
+            <if test="bourn != null  and bourn != ''"> and BOURN_STORAGE_ID = #{bourn}</if>
+            <if test="createDate != null and createDate != ''"> and create_date = #{createDate}</if>
+        </trim>
+        where invoice_num = #{invoiceNum}
+    </update>
+    
+</mapper>

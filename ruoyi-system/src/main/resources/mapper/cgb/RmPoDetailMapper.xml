@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cgb.mapper.RmPoDetailMapper">
+
+    <resultMap type="RmPoDetail" id="RmPoDetailResult">
+        <result property="poNum"    column="po_num"    />
+        <result property="lineNum"    column="line_num"    />
+        <result property="wlxxId" column="WLXXID"/>
+        <result property="wlmcId" column="wlmc"/>
+        <result property="plan_weight" column="plan_weight"/>
+        <result property="sipping_weight" column="sipping_weight"/>
+    </resultMap>
+
+    <sql id="selectRmPoDetailVo">
+        select
+            po_num,
+            line_num,
+            WLXXID,
+            getwlxx(wlxxid) as wlmc,
+            plan_weight,
+            sipping_weight
+            from rm_po_detail
+    </sql>
+
+    <select id="selectRmPoDetailList" parameterType="RmPoDetail" resultMap="RmPoDetailResult">
+        <include refid="selectRmPoDetailVo"/>
+
+        <where>
+            <if test="poNum != null  and poNum != ''"> and po_num = #{poNum}</if>
+            <if test="lineNum != null  and lineNum != ''"> and line_num = #{lineNum}</if>
+            <if test="wlxxId != null and wlxxId != ''"> and WLXXID = #{wlxxId}</if>
+            <if test="wlmcId != null and wlmcId != ''">and wlmc = #{wlmcId}</if>
+            <if test="plan_weight != null  and plan_weight != ''"> and plan_weight = #{plan_weight}</if>
+            <if test="sipping_weight != null  and sipping_weight != ''"> and sipping_weight = #{sipping_weight}</if>
+
+
+        </where>
+    </select>
+
+    <select id="selectRmPoDetailById" parameterType="String" resultMap="RmPoDetailResult">
+        <include refid="selectRmPoDetailVo"/>
+        where po_num = #{poNum}
+    </select>
+
+
+</mapper>

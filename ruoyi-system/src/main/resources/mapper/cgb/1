@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ds.tech.dao.asset.purchase.AssetPurchaseExtDao">
+	<resultMap id="BaseResultMap"
+		type="com.ds.tech.entity.asset.AssetActionExt">
+		<id column="asset_action_id" property="assetActionId" jdbcType="BIGINT" />
+		<result column="asset_voucher_number" property="assetVoucherNumber" jdbcType="VARCHAR" />
+		<result column="asset_action_time" property="assetActionTime" jdbcType="VARCHAR" />
+		<result column="receipt_status" property="receiptStatus" jdbcType="INTEGER" />
+		<result column="accomplish_status" property="accomplishStatus" jdbcType="INTEGER" />
+		<result column="asset_supplier_id" property="assetSupplierId" jdbcType="INTEGER" />
+		<result column="asset_teacher_id" property="assetTeacherId" jdbcType="INTEGER" />
+		<result column="receipt_type" property="receiptType" jdbcType="INTEGER" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="asset_action_time" property="assetActionTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<select id="selectByExample" resultMap="BaseResultMap" parameterType="com.ds.tech.entity.asset.purchase.AssetPurchaseDetailExtExample">
+		SELECT
+		  	aa.asset_action_id,
+			aa.asset_voucher_number,
+			aat.asset_action_time,
+			aa.asset_supplier_id,
+			aat.asset_teacher_id,
+			aa.receipt_status,
+			aa.accomplish_status,
+			aa.receipt_type,
+			aa.remark
+		FROM
+			asset_action aa
+			LEFT JOIN asset_purchase_detail apd ON aa.asset_action_id = apd.asset_action_id
+			LEFT JOIN asset_commodity ac ON apd.asset_commodity_id = ac.asset_commodity_id
+			LEFT JOIN asset_action_teacher aat ON aat.asset_action_id = aa.asset_action_id
+		<where>
+			<if test="assetTeacherId != null">
+				AND aat.asset_teacher_id = #{assetTeacherId}
+				AND aat.status = 0
+			</if>
+	         <if test="purchaseStartTime !=null ">
+	            AND aat.asset_action_time >=#{purchaseStartTime}
+	            AND aat.status = 0
+	        </if>
+	        <if test="purchaseEndTime !=null">
+	            AND  #{purchaseEndTime}>=aat.asset_action_time
+	            AND aat.status = 0
+	        </if>
+			<if test="assetCode != null">
+				AND ac.asset_code = #{assetCode}
+				AND apd.status = 0
+			</if>
+			<if test="receiptStatus != null">
+				AND aa.receipt_status = #{receiptStatus}
+			</if>
+			<if test="accomplishStatus != null">
+				AND aa.accomplish_status = #{accomplishStatus}
+			</if>
+			<if test="assetTemplateId != null">
+				AND ac.asset_template_id = #{assetTemplateId}
+				AND apd.status = 0
+			</if>
+			<if test="actionType != null">
+				AND aa.action_type = #{actionType}
+			</if>
+			<if test="assetSupplierId != null">
+				AND aa.asset_supplier_id = #{assetSupplierId}
+			</if>
+			AND aat.type = 1
+			AND aa.status = 0
+		</where>
+		    GROUP BY
+		aa.asset_action_id
+		    ORDER BY
+        aa.update_time DESC
+	    <if test="start !=null and length!=null and length!=-1" >
+	      limit ${start},${length}
+	    </if>
+	</select>
+	<select id="countByExample" resultType="java.lang.Integer" parameterType="com.ds.tech.entity.asset.purchase.AssetPurchaseDetailExtExample">
+		SELECT
+	count( 1 )
+FROM
+	(
+		SELECT
+		  	count(*)
+		FROM
+			asset_action aa
+			LEFT JOIN asset_purchase_detail apd ON aa.asset_action_id = apd.asset_action_id
+			LEFT JOIN asset_commodity ac ON apd.asset_commodity_id = ac.asset_commodity_id
+			LEFT JOIN asset_action_teacher aat ON aat.asset_action_id = aa.asset_action_id
+		<where>
+			<if test="assetTeacherId != null">
+				AND aat.asset_teacher_id = #{assetTeacherId}
+				AND aat.status = 0
+			</if>
+	         <if test="purchaseStartTime !=null ">
+	            AND aat.asset_action_time >=#{purchaseStartTime}
+	            AND aat.status = 0
+	        </if>
+	        <if test="purchaseEndTime !=null">
+	            AND  #{purchaseEndTime}>=aat.asset_action_time
+	            AND aat.status = 0
+	        </if>
+			<if test="assetCode != null">
+				AND ac.asset_code = #{assetCode}
+				AND ac.status = 0
+			</if>
+			<if test="receiptStatus != null">
+				AND aa.receipt_status = #{receiptStatus}
+			</if>
+			<if test="accomplishStatus != null">
+				AND aa.accomplish_status = #{accomplishStatus}
+			</if>
+			<if test="assetTemplateId != null">
+				AND ac.asset_template_id = #{assetTemplateId}
+				AND ac.status = 0
+			</if>
+			<if test="actionType != null">
+				AND aa.action_type = #{actionType}
+			</if>
+			<if test="assetSupplierId != null">
+				AND aa.asset_supplier_id = #{assetSupplierId}
+			</if>
+			AND aat.type = 1
+			AND aa.status = 0
+		</where>
+		GROUP BY
+	aa.asset_action_id )as qw
+	</select>
+</mapper>
